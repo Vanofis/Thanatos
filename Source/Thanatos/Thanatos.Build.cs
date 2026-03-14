@@ -12,11 +12,10 @@ public class Thanatos : ModuleRules
 			"Engine", 
 			"InputCore"
 		]);
-
-		/*PrivateDependencyModuleNames.AddRange([
-			"UMG",
-			"Slate",
-			"SlateCore",
-		]);*/
+		
+		PrivateDependencyModuleNames.AddRange([
+			"GameplayTags",
+			"GameplayAbilities"
+		]);
 	}
 }
