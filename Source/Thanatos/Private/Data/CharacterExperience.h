@@ -2,10 +2,10 @@
 
 #include "CoreMinimal.h"
 #include "Engine/DataAsset.h"
-#include "CharacterConfiguration.generated.h"
+#include "CharacterExperience.generated.h"
 
 UCLASS(Blueprintable, Abstract, EditInlineNew, DefaultToInstanced)
-class UMovementProcessor : public UObject
+class THANATOS_API UMovementProcessor : public UObject
 {
 	GENERATED_BODY()
 	
@@ -15,7 +15,7 @@ public:
 };
 
 UCLASS(Blueprintable, Abstract, EditInlineNew, DefaultToInstanced)
-class UCharacterConfigurationAction : public UObject
+class THANATOS_API UCharacterExperienceAction : public UObject
 {
 	GENERATED_BODY()
 	
@@ -27,13 +27,13 @@ public:
 };
 
 UCLASS(Blueprintable)
-class UCharacterConfiguration : public UPrimaryDataAsset
+class THANATOS_API UCharacterExperience : public UPrimaryDataAsset
 {
 	GENERATED_BODY()
 	
 public:
 	UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Instanced)
-	TArray<TObjectPtr<UCharacterConfigurationAction>> Actions;
+	TArray<TObjectPtr<UCharacterExperienceAction>> Actions;
 	UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Instanced)
 	TObjectPtr<UMovementProcessor> MovementProcessor;
 };

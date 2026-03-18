@@ -1,12 +1,22 @@
 ﻿#include "CharacterConfigurationManager.h"
-#include "Data/CharacterConfiguration.h"
+#include "Data/CharacterExperience.h"
 
 UCharacterConfigurationManager::UCharacterConfigurationManager()
 {
 	PrimaryComponentTick.bCanEverTick = false;
 }
 
-void UCharacterConfigurationManager::SetCharacterConfiguration(UCharacterConfiguration* NewConfiguration)
+void UCharacterConfigurationManager::BeginPlay()
+{
+	if (ActiveConfiguration)
+	{
+		ApplyConfigurationActions();
+	}
+	
+	Super::BeginPlay();
+}
+
+void UCharacterConfigurationManager::SetCharacterConfiguration(UCharacterExperience* NewConfiguration)
 {
 	if (ActiveConfiguration)
 	{
@@ -35,7 +45,7 @@ void UCharacterConfigurationManager::ApplyConfigurationActions()
 {
 	for (const auto& Action : ActiveConfiguration->Actions)
 	{
-		ActiveActions.Add(DuplicateObject<UCharacterConfigurationAction>(Action, this));
+		ActiveActions.Add(DuplicateObject<UCharacterExperienceAction>(Action, this));
 		
 		const auto Last = ActiveActions.Last();
 		Last->Apply(GetController()->GetPawn());

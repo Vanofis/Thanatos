@@ -4,8 +4,8 @@
 #include "Components/ActorComponent.h"
 #include "CharacterConfigurationManager.generated.h"
 
-class UCharacterConfiguration;
-class UCharacterConfigurationAction;
+class UCharacterExperience;
+class UCharacterExperienceAction;
 
 UCLASS(Blueprintable, Abstract, meta=(BlueprintSpawnableComponent))
 class THANATOS_API UCharacterConfigurationManager : public UActorComponent
@@ -14,11 +14,11 @@ class THANATOS_API UCharacterConfigurationManager : public UActorComponent
 
 public:
 	UPROPERTY(BlueprintReadOnly, EditDefaultsOnly)
-	TObjectPtr<UCharacterConfiguration> ActiveConfiguration;
+	TObjectPtr<UCharacterExperience> ActiveConfiguration;
 	
 private:
 	UPROPERTY()
-	TArray<TObjectPtr<UCharacterConfigurationAction>> ActiveActions;
+	TArray<TObjectPtr<UCharacterExperienceAction>> ActiveActions;
 
 	UPROPERTY()
 	TObjectPtr<AController> Controller;
@@ -26,9 +26,11 @@ private:
 public:
 	UCharacterConfigurationManager();
 	
+	virtual void BeginPlay() override;
+	
 protected:
 	UFUNCTION(BlueprintCallable)
-	void SetCharacterConfiguration(UCharacterConfiguration* NewConfiguration);
+	void SetCharacterConfiguration(UCharacterExperience* NewConfiguration);
 	
 	UFUNCTION(BlueprintCallable, BlueprintPure)
 	AController* GetController();

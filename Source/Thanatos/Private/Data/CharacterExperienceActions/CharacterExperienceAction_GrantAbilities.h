@@ -2,13 +2,13 @@
 
 #include "CoreMinimal.h"
 #include "GameplayAbilitySpecHandle.h"
-#include "Data/CharacterConfiguration.h"
-#include "CharacterConfigurationAction_GrantAbilities.generated.h"
+#include "Data/CharacterExperience.h"
+#include "CharacterExperienceAction_GrantAbilities.generated.h"
 
 class UGameplayAbility;
 
 UCLASS(DisplayName="Grant Abilities")
-class THANATOS_API UCharacterConfigurationAction_GrantAbilities : public UCharacterConfigurationAction
+class THANATOS_API UCharacterExperienceAction_GrantAbilities : public UCharacterExperienceAction
 {
 	GENERATED_BODY()
 	

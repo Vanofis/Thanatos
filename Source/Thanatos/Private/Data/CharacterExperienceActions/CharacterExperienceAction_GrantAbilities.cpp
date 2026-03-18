@@ -1,7 +1,7 @@
-﻿#include "CharacterConfigurationAction_GrantAbilities.h"
+﻿#include "CharacterExperienceAction_GrantAbilities.h"
 #include "AbilitySystemComponent.h"
 
-void UCharacterConfigurationAction_GrantAbilities::Apply_Implementation(APawn* Pawn)
+void UCharacterExperienceAction_GrantAbilities::Apply_Implementation(APawn* Pawn)
 {
 	UAbilitySystemComponent* AbilitySystemComponent = Pawn->FindComponentByClass<UAbilitySystemComponent>();
 	for (const auto& AbilityClass : GameplayAbilities)
@@ -10,7 +10,7 @@ void UCharacterConfigurationAction_GrantAbilities::Apply_Implementation(APawn* P
 	}
 }
 
-void UCharacterConfigurationAction_GrantAbilities::Undo_Implementation(APawn* Pawn)
+void UCharacterExperienceAction_GrantAbilities::Undo_Implementation(APawn* Pawn)
 {
 	UAbilitySystemComponent* AbilitySystemComponent = Pawn->FindComponentByClass<UAbilitySystemComponent>();
 	while (!GrantedAbilities.IsEmpty())
