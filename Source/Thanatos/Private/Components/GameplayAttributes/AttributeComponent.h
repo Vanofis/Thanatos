@@ -36,11 +36,11 @@ public:
 	virtual void BeginPlay() override;
 	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
 	
-	virtual const TArray<FGameplayAttribute>& GetAttributeInitializationOrder();
-	
 protected:
 	UFUNCTION(BlueprintNativeEvent, Category="Attribute Component")
 	void PreAttributeSetInitialization();
+	
+	virtual TArray<FGameplayAttribute> GetAttributeInitializationOrder();
 	
 private:
 	void InitializeAttributeSet();

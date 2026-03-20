@@ -10,7 +10,6 @@ UMovementMultipliersComponent::UMovementMultipliersComponent()
 void UMovementMultipliersComponent::PreAttributeSetInitialization_Implementation()
 {
 	CharacterMovementComponent = GetOwner()->FindComponentByClass<UCharacterMovementComponent>();
-	
 	if (!CharacterMovementComponent)
 	{
 		return;
@@ -24,11 +23,11 @@ void UMovementMultipliersComponent::PreAttributeSetInitialization_Implementation
 	
 	const UMovementMultipliersAttributeSet* MovementMultipliersAttributeSet = GetMovementMultipliersAttributeSet();
 	
-	MovementMultipliersAttributeSet->OnMaxAccelerationMultChanged.AddUObject(this, &ThisClass::OnMaxAccelerationChanged);
-	MovementMultipliersAttributeSet->OnMaxWalkSpeedMultChanged.AddUObject(this, &ThisClass::OnMaxWalkSpeedChanged);
-	MovementMultipliersAttributeSet->OnBrakingDecelerationWalkingMultChanged.AddUObject(this, &ThisClass::OnBrakingDecelerationWalkingChanged);
-	MovementMultipliersAttributeSet->OnMaxFlySpeedMultChanged.AddUObject(this, &ThisClass::OnMaxFlySpeedChanged);
-	MovementMultipliersAttributeSet->OnBrakingDecelerationFlyingMultChanged.AddUObject(this, &ThisClass::OnBrakingDecelerationFlyingChanged);
+	MovementMultipliersAttributeSet->OnMaxAccelerationMultChanged.AddUObject(this, &ThisClass::HandleOnMaxAccelerationChanged);
+	MovementMultipliersAttributeSet->OnMaxWalkSpeedMultChanged.AddUObject(this, &ThisClass::HandleOnMaxWalkSpeedChanged);
+	MovementMultipliersAttributeSet->OnBrakingDecelerationWalkingMultChanged.AddUObject(this, &ThisClass::HandleOnBrakingDecelerationWalkingChanged);
+	MovementMultipliersAttributeSet->OnMaxFlySpeedMultChanged.AddUObject(this, &ThisClass::HandleOnMaxFlySpeedChanged);
+	MovementMultipliersAttributeSet->OnBrakingDecelerationFlyingMultChanged.AddUObject(this, &ThisClass::HandleOnBrakingDecelerationFlyingChanged);
 }
 
 UMovementMultipliersAttributeSet* UMovementMultipliersComponent::GetMovementMultipliersAttributeSet() const
@@ -39,27 +38,57 @@ UMovementMultipliersAttributeSet* UMovementMultipliersComponent::GetMovementMult
 	return MovementMultipliersAttributeSet;
 }
 
-void UMovementMultipliersComponent::OnMaxAccelerationChanged(const FOnAttributeChangeData& Data) const
+void UMovementMultipliersComponent::HandleOnMaxAccelerationChanged(
+	const FGameplayAttribute& Attribute, 
+	const float OldValue, 
+	const float NewValue) 
+const
 {
-	CharacterMovementComponent->MaxAcceleration = InitialMaxAcceleration * Data.NewValue;
+	CharacterMovementComponent->MaxAcceleration = InitialMaxAcceleration * NewValue;
+	
+	OnMaxAccelerationChanged.Broadcast(Attribute, OldValue, NewValue);
 }
 
-void UMovementMultipliersComponent::OnMaxWalkSpeedChanged(const FOnAttributeChangeData& Data) const
+void UMovementMultipliersComponent::HandleOnMaxWalkSpeedChanged(
+	const FGameplayAttribute& Attribute, 
+	const float OldValue, 
+	const float NewValue) 
+const
 {
-	CharacterMovementComponent->MaxWalkSpeed = InitialMaxWalkSpeed * Data.NewValue;
+	CharacterMovementComponent->MaxWalkSpeed = InitialMaxWalkSpeed * NewValue;
+	
+	OnMaxWalkSpeedChanged.Broadcast(Attribute, OldValue, NewValue);
 }
 
-void UMovementMultipliersComponent::OnBrakingDecelerationWalkingChanged(const FOnAttributeChangeData& Data) const
+void UMovementMultipliersComponent::HandleOnBrakingDecelerationWalkingChanged(
+	const FGameplayAttribute& Attribute, 
+	const float OldValue, 
+	const float NewValue) 
+const
 {
-	CharacterMovementComponent->BrakingDecelerationWalking = InitialBrakingDecelerationWalking * Data.NewValue;
+	CharacterMovementComponent->BrakingDecelerationWalking = InitialBrakingDecelerationWalking * NewValue;
+	
+	OnBrakingDecelerationWalkingChanged.Broadcast(Attribute, OldValue, NewValue);
 }
 
-void UMovementMultipliersComponent::OnMaxFlySpeedChanged(const FOnAttributeChangeData& Data) const
+void UMovementMultipliersComponent::HandleOnMaxFlySpeedChanged(
+	const FGameplayAttribute& Attribute, 
+	const float OldValue, 
+	const float NewValue) 
+const
 {
-	CharacterMovementComponent->MaxFlySpeed = InitialMaxFlySpeed * Data.NewValue;
+	CharacterMovementComponent->MaxFlySpeed = InitialMaxFlySpeed * NewValue;
+	
+	OnMaxFlySpeedChanged.Broadcast(Attribute, OldValue, NewValue);
 }
 
-void UMovementMultipliersComponent::OnBrakingDecelerationFlyingChanged(const FOnAttributeChangeData& Data) const
+void UMovementMultipliersComponent::HandleOnBrakingDecelerationFlyingChanged(
+	const FGameplayAttribute& Attribute, 
+	const float OldValue, 
+	const float NewValue) 
+const
 {
-	CharacterMovementComponent->BrakingDecelerationFlying = InitialBrakingDecelerationFlying * Data.NewValue;
+	CharacterMovementComponent->BrakingDecelerationFlying = InitialBrakingDecelerationFlying * NewValue;
+	
+	OnBrakingDecelerationFlyingChanged.Broadcast(Attribute, OldValue, NewValue);
 }

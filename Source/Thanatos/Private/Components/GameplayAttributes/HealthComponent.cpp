@@ -11,16 +11,13 @@ float UHealthComponent::GetMinHealth()
 	return UHealthAttributeSet::MinHealth;
 }
 
-const TArray<FGameplayAttribute>& UHealthComponent::GetAttributeInitializationOrder()
+TArray<FGameplayAttribute> UHealthComponent::GetAttributeInitializationOrder()
 {
-	static TArray<FGameplayAttribute> Order;
-	if (Order.IsEmpty())
-	{
-		Order.Add(UHealthAttributeSet::GetMaxHealthAttribute());
-		Order.Add(UHealthAttributeSet::GetHealthAttribute());
-	}
+	TArray<FGameplayAttribute> Order;
+	Order.Add(UHealthAttributeSet::GetMaxHealthAttribute());
+	Order.Add(UHealthAttributeSet::GetHealthAttribute());
 	
-	return Order;
+	return MoveTemp(Order);
 }
 
 void UHealthComponent::PreAttributeSetInitialization_Implementation()
@@ -32,25 +29,33 @@ void UHealthComponent::PreAttributeSetInitialization_Implementation()
 	HealthAttributeSet->OnOutOfHealth.AddUObject(this, &ThisClass::HandleOnOutOfHealth);
 }
 
-void UHealthComponent::HandleOnHealthChanged(const FOnAttributeChangeData& Data) const
-{
-	OnHealthChanged.Broadcast(Data.Attribute, Data.OldValue, Data.NewValue);
-}
-
-void UHealthComponent::HandleOnMaxHealthChanged(const FOnAttributeChangeData& Data) const
-{
-	OnMaxHealthChanged.Broadcast(Data.Attribute, Data.OldValue, Data.NewValue);
-}
-
-void UHealthComponent::HandleOnOutOfHealth(const FGameplayAttribute& Attribute, float Value) const
-{
-	OnOutOfHealth.Broadcast(Attribute, Value);
-}
-
 UHealthAttributeSet* UHealthComponent::GetHealthAttributeSet() const
 {
 	UHealthAttributeSet* HealthAttributeSet = Cast<UHealthAttributeSet>(AttributeSet);
 	check(HealthAttributeSet)
 	
 	return HealthAttributeSet;
+}
+
+void UHealthComponent::HandleOnHealthChanged(
+	const FGameplayAttribute& Attribute, 
+	const float OldValue, 
+	const float NewValue) 
+const
+{
+	OnHealthChanged.Broadcast(Attribute, OldValue, NewValue);
+}
+
+void UHealthComponent::HandleOnMaxHealthChanged(
+	const FGameplayAttribute& Attribute, 
+	const float OldValue,
+	const float NewValue) 
+const
+{
+	OnMaxHealthChanged.Broadcast(Attribute, OldValue, NewValue);
+}
+
+void UHealthComponent::HandleOnOutOfHealth(const FGameplayAttribute& Attribute, float Value) const
+{
+	OnOutOfHealth.Broadcast(Attribute, Value);
 }

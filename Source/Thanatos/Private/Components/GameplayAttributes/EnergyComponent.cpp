@@ -21,19 +21,16 @@ float UEnergyComponent::GetMinHeat()
 	return UEnergyAttributeSet::MinHeat;
 }
 
-const TArray<FGameplayAttribute>& UEnergyComponent::GetAttributeInitializationOrder()
+TArray<FGameplayAttribute> UEnergyComponent::GetAttributeInitializationOrder()
 {
-	static TArray<FGameplayAttribute> Order;
-	if (Order.IsEmpty())
-	{
-		Order.Add(UEnergyAttributeSet::GetGatheredDataAttribute());
-		Order.Add(UEnergyAttributeSet::GetMaxHeatAttribute());
-		Order.Add(UEnergyAttributeSet::GetHeatAttribute());
-		Order.Add(UEnergyAttributeSet::GetMaxEnergyAttribute());
-		Order.Add(UEnergyAttributeSet::GetEnergyAttribute());
-	}
+	TArray<FGameplayAttribute> Order;
+	Order.Add(UEnergyAttributeSet::GetGatheredDataAttribute());
+	Order.Add(UEnergyAttributeSet::GetMaxHeatAttribute());
+	Order.Add(UEnergyAttributeSet::GetHeatAttribute());
+	Order.Add(UEnergyAttributeSet::GetMaxEnergyAttribute());
+	Order.Add(UEnergyAttributeSet::GetEnergyAttribute());
 	
-	return Order;
+	return MoveTemp(Order);
 }
 
 void UEnergyComponent::PreAttributeSetInitialization_Implementation()
@@ -56,29 +53,49 @@ UEnergyAttributeSet* UEnergyComponent::GetEnergyAttributeSet() const
 	return EnergyAttributeSet;
 }
 
-void UEnergyComponent::HandleOnGatheredDataChanged(const FOnAttributeChangeData& Data) const
+void UEnergyComponent::HandleOnGatheredDataChanged(
+	const FGameplayAttribute& Attribute, 
+	const float OldValue, 
+	const float NewValue) 
+const
 {
-	OnGatheredDataChanged.Broadcast(Data.Attribute, Data.OldValue, Data.NewValue);
+	OnGatheredDataChanged.Broadcast(Attribute, OldValue, NewValue);
 }
 
-void UEnergyComponent::HandleOnHeatChanged(const FOnAttributeChangeData& Data) const
+void UEnergyComponent::HandleOnHeatChanged(
+	const FGameplayAttribute& Attribute, 
+	const float OldValue, 
+	const float NewValue) 
+const
 {
-	OnHeatChanged.Broadcast(Data.Attribute, Data.OldValue, Data.NewValue);
+	OnHeatChanged.Broadcast(Attribute, OldValue, NewValue);
 }
 
-void UEnergyComponent::HandleOnMaxHeatChanged(const FOnAttributeChangeData& Data) const
+void UEnergyComponent::HandleOnMaxHeatChanged(
+	const FGameplayAttribute& Attribute, 
+	const float OldValue, 
+	const float NewValue) 
+const
 {
-	OnMaxHeatChanged.Broadcast(Data.Attribute, Data.OldValue, Data.NewValue);
+	OnMaxHeatChanged.Broadcast(Attribute, OldValue, NewValue);
 }
 
-void UEnergyComponent::HandleOnEnergyChanged(const FOnAttributeChangeData& Data) const
+void UEnergyComponent::HandleOnEnergyChanged(
+	const FGameplayAttribute& Attribute, 
+	const float OldValue, 
+	const float NewValue) 
+const
 {
-	OnEnergyChanged.Broadcast(Data.Attribute, Data.OldValue, Data.NewValue);
+	OnEnergyChanged.Broadcast(Attribute, OldValue, NewValue);
 }
 
-void UEnergyComponent::HandleOnMaxEnergyChanged(const FOnAttributeChangeData& Data) const
+void UEnergyComponent::HandleOnMaxEnergyChanged(
+	const FGameplayAttribute& Attribute, 
+	const float OldValue, 
+	const float NewValue) 
+const
 {
-	OnMaxEnergyChanged.Broadcast(Data.Attribute, Data.OldValue, Data.NewValue);
+	OnMaxEnergyChanged.Broadcast(Attribute, OldValue, NewValue);
 }
 
 void UEnergyComponent::HandleOnOverheat(const FGameplayAttribute& Attribute, float Value) const

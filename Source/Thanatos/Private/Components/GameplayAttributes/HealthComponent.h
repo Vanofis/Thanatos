@@ -23,16 +23,24 @@ public:
 	
 	UFUNCTION(BlueprintCallable, BlueprintPure, Category="Health Component")
 	static float GetMinHealth();
-	
-	virtual const TArray<FGameplayAttribute>& GetAttributeInitializationOrder() override;
-	
+
 protected:
 	virtual void PreAttributeSetInitialization_Implementation() override;
 	
-	UHealthAttributeSet* GetHealthAttributeSet() const;
+	virtual TArray<FGameplayAttribute> GetAttributeInitializationOrder() override;
 	
+	UHealthAttributeSet* GetHealthAttributeSet() const;
+
 private:
-	void HandleOnHealthChanged(const FOnAttributeChangeData& Data) const;
-	void HandleOnMaxHealthChanged(const FOnAttributeChangeData& Data) const;
-	void HandleOnOutOfHealth(const FGameplayAttribute& Attribute, float Value) const;
+	void HandleOnHealthChanged(
+		const FGameplayAttribute& Attribute, 
+		const float OldValue, 
+		const float NewValue) 
+	const;
+	void HandleOnMaxHealthChanged(
+		const FGameplayAttribute& Attribute, 
+		const float OldValue, 
+		const float NewValue) 
+	const;
+	void HandleOnOutOfHealth(const FGameplayAttribute& Attribute, const float Value) const;
 };

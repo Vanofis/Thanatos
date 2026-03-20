@@ -6,6 +6,7 @@ UHealthAttributeSet::UHealthAttributeSet()
 	, MaxHealth(100.0f)
 	, HealthDamage(0.0f)
 	, HealthRestoration(0.0f)
+	, bIsOutOfHealth(false)
 {}
 
 bool UHealthAttributeSet::PreGameplayEffectExecute(FGameplayEffectModCallbackData& Data)
@@ -14,9 +15,6 @@ bool UHealthAttributeSet::PreGameplayEffectExecute(FGameplayEffectModCallbackDat
 	{
 		return false;
 	}
-	
-	HealthPreChanged = GetHealth();
-	MaxHealthPreChanged = GetMaxHealth();
 	
 	return Super::PreGameplayEffectExecute(Data);
 }
@@ -45,32 +43,6 @@ void UHealthAttributeSet::PostGameplayEffectExecute(const FGameplayEffectModCall
 		SetHealth(FMath::Clamp(GetHealth() + GetHealthRestoration(), MinHealth, GetMaxHealth()));
 		SetHealthDamage(0.0f);
 	}
-	
-	FOnAttributeChangeData ChangeData;
-	ChangeData.GEModData = &Data;
-	
-	if (!FMath::IsNearlyEqual(GetHealth(), HealthPreChanged))
-	{
-		ChangeData.Attribute = GetHealthAttribute();
-		ChangeData.NewValue = GetHealth();
-		ChangeData.OldValue = HealthPreChanged;
-		
-		OnHealthChanged.Broadcast(ChangeData);
-	}
-	
-	if (!FMath::IsNearlyEqual(GetMaxHealth(), MaxHealthPreChanged))
-	{
-		ChangeData.Attribute = GetMaxHealthAttribute();
-		ChangeData.NewValue = GetMaxHealth();
-		ChangeData.OldValue = MaxHealthPreChanged;
-		
-		OnMaxHealthChanged.Broadcast(ChangeData);
-	}
-	
-	if (FMath::IsNearlyEqual(GetHealth(), MinHealth))
-	{
-		OnOutOfHealth.Broadcast(GetHealthAttribute(), MinHealth);
-	}
 }
 
 void UHealthAttributeSet::PreAttributeChange(const FGameplayAttribute& Attribute, float& NewValue)
@@ -78,5 +50,29 @@ void UHealthAttributeSet::PreAttributeChange(const FGameplayAttribute& Attribute
 	if (Attribute == GetHealthAttribute())
 	{
 		NewValue = FMath::Clamp(NewValue, MinHealth, GetMaxHealth());
+	}
+}
+
+void UHealthAttributeSet::PostAttributeChange(const FGameplayAttribute& Attribute, float OldValue, float NewValue)
+{
+	if (FMath::IsNearlyEqual(OldValue, NewValue))
+	{
+		return;
+	}
+	
+	if (Attribute == GetHealthAttribute())
+	{
+		OnHealthChanged.Broadcast(Attribute, OldValue, NewValue);
+		
+		if (!bIsOutOfHealth && NewValue <= MinHealth)
+		{
+			bIsOutOfHealth = true;
+			
+			OnOutOfHealth.Broadcast(Attribute, NewValue);
+		}
+	}
+	else if (Attribute == GetMaxHealthAttribute())
+	{
+		OnMaxHealthChanged.Broadcast(Attribute, OldValue, NewValue);
 	}
 }

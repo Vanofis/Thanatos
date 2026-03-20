@@ -18,6 +18,4 @@ public:
 	static float GetMinRangedDamage();
 	UFUNCTION(BlueprintCallable, BlueprintPure, Category = "Combat Characteristics Component")
 	static float GetMinArmor();
-	
-	virtual const TArray<FGameplayAttribute>& GetAttributeInitializationOrder() override;
 };

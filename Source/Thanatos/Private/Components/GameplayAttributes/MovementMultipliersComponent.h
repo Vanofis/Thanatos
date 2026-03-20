@@ -12,6 +12,20 @@ class THANATOS_API UMovementMultipliersComponent : public UAttributeComponent
 {
 	GENERATED_BODY()
 
+public:
+	UPROPERTY(BlueprintReadOnly, BlueprintAssignable, Category="Movement Multipliers Component")
+	mutable FGameplayAttributeChangedEvent OnMaxAccelerationChanged;
+	
+	UPROPERTY(BlueprintReadOnly, BlueprintAssignable, Category="Movement Multipliers Component")
+	mutable FGameplayAttributeChangedEvent OnMaxWalkSpeedChanged;
+	UPROPERTY(BlueprintReadOnly, BlueprintAssignable, Category="Movement Multipliers Component")
+	mutable FGameplayAttributeChangedEvent OnBrakingDecelerationWalkingChanged;
+	
+	UPROPERTY(BlueprintReadOnly, BlueprintAssignable, Category="Movement Multipliers Component")
+	mutable FGameplayAttributeChangedEvent OnMaxFlySpeedChanged;
+	UPROPERTY(BlueprintReadOnly, BlueprintAssignable, Category="Movement Multipliers Component")
+	mutable FGameplayAttributeChangedEvent OnBrakingDecelerationFlyingChanged;
+	
 protected:
 	UPROPERTY()
 	TObjectPtr<UCharacterMovementComponent> CharacterMovementComponent;
@@ -29,16 +43,36 @@ public:
 	UMovementMultipliersComponent();
 	
 	virtual void PreAttributeSetInitialization_Implementation() override;
-	
+
 protected:
 	UMovementMultipliersAttributeSet* GetMovementMultipliersAttributeSet() const;
 	
 private:
-	void OnMaxAccelerationChanged(const FOnAttributeChangeData& Data) const;
+	void HandleOnMaxAccelerationChanged(
+		const FGameplayAttribute& Attribute, 
+		const float OldValue, 
+		const float NewValue) 
+	const;
 	
-	void OnMaxWalkSpeedChanged(const FOnAttributeChangeData& Data) const;
-	void OnBrakingDecelerationWalkingChanged(const FOnAttributeChangeData& Data) const;
+	void HandleOnMaxWalkSpeedChanged(
+		const FGameplayAttribute& Attribute, 
+		const float OldValue, 
+		const float NewValue) 
+	const;
+	void HandleOnBrakingDecelerationWalkingChanged(
+		const FGameplayAttribute& Attribute, 
+		const float OldValue, 
+		const float NewValue) 
+	const;
 	
-	void OnMaxFlySpeedChanged(const FOnAttributeChangeData& Data) const;
-	void OnBrakingDecelerationFlyingChanged(const FOnAttributeChangeData& Data) const;
+	void HandleOnMaxFlySpeedChanged(
+		const FGameplayAttribute& Attribute, 
+		const float OldValue, 
+		const float NewValue) 
+	const;
+	void HandleOnBrakingDecelerationFlyingChanged(
+		const FGameplayAttribute& Attribute, 
+		const float OldValue, 
+		const float NewValue) 
+	const;
 };

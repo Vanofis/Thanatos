@@ -4,6 +4,7 @@
 #include "AbilitySystemComponent.h"
 #include "AttributeSet.h"
 #include "GameplayEffectTypes.h"
+#include "Thanatos_GameplayAttributesTypes.h"
 #include "MovementMultipliersAttributeSet.generated.h"
 
 UCLASS()
@@ -12,13 +13,13 @@ class THANATOS_API UMovementMultipliersAttributeSet : public UAttributeSet
 	GENERATED_BODY()
 	
 public:
-	mutable FOnGameplayAttributeValueChange OnMaxAccelerationMultChanged;
+	mutable FGameplayAttributeChangeEventNative OnMaxAccelerationMultChanged;
 	
-	mutable FOnGameplayAttributeValueChange OnMaxWalkSpeedMultChanged;
-	mutable FOnGameplayAttributeValueChange OnBrakingDecelerationWalkingMultChanged;
+	mutable FGameplayAttributeChangeEventNative OnMaxWalkSpeedMultChanged;
+	mutable FGameplayAttributeChangeEventNative OnBrakingDecelerationWalkingMultChanged;
 	
-	mutable FOnGameplayAttributeValueChange OnMaxFlySpeedMultChanged;
-	mutable FOnGameplayAttributeValueChange OnBrakingDecelerationFlyingMultChanged;
+	mutable FGameplayAttributeChangeEventNative OnMaxFlySpeedMultChanged;
+	mutable FGameplayAttributeChangeEventNative OnBrakingDecelerationFlyingMultChanged;
 	
 private:
 	UPROPERTY(BlueprintReadOnly, meta=(AllowPrivateAccess=true))
@@ -34,21 +35,13 @@ private:
 	UPROPERTY(BlueprintReadOnly, meta=(AllowPrivateAccess=true))
 	FGameplayAttributeData BrakingDecelerationFlyingMult;
 	
-	float MaxAccelerationMultPreChanged;
-	
-	float MaxWalkSpeedMultPreChanged;
-	float BrakingDecelerationWalkingMultPreChanged;
-	
-	float MaxFlySpeedMultPreChanged;
-	float BrakingDecelerationFlyingMultPreChanged;
-	
 public:
 	UMovementMultipliersAttributeSet();
 	
 	virtual bool PreGameplayEffectExecute(FGameplayEffectModCallbackData& Data) override;
-	virtual void PostGameplayEffectExecute(const FGameplayEffectModCallbackData& Data) override;
 	
 	virtual void PreAttributeChange(const FGameplayAttribute& Attribute, float& NewValue) override;
+	virtual void PostAttributeChange(const FGameplayAttribute& Attribute, float OldValue, float NewValue) override;
 	
 	ATTRIBUTE_ACCESSORS_BASIC(UMovementMultipliersAttributeSet, MaxAccelerationMult)
 	

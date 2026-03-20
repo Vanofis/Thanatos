@@ -36,19 +36,39 @@ public:
 	static float GetMinEnergy();
 	UFUNCTION(BlueprintCallable, BlueprintPure, Category="Energy Component")
 	static float GetMinHeat();
-	
-	virtual const TArray<FGameplayAttribute>& GetAttributeInitializationOrder() override;
-	
+
+protected:
 	virtual void PreAttributeSetInitialization_Implementation() override;
 	
-protected:
+	virtual TArray<FGameplayAttribute> GetAttributeInitializationOrder() override;
+	
 	UEnergyAttributeSet* GetEnergyAttributeSet() const;
 	
 private:
-	void HandleOnGatheredDataChanged(const FOnAttributeChangeData& Data) const;
-	void HandleOnHeatChanged(const FOnAttributeChangeData& Data) const;
-	void HandleOnMaxHeatChanged(const FOnAttributeChangeData& Data) const;
-	void HandleOnEnergyChanged(const FOnAttributeChangeData& Data) const;
-	void HandleOnMaxEnergyChanged(const FOnAttributeChangeData& Data) const;
+	void HandleOnGatheredDataChanged(
+		const FGameplayAttribute& Attribute, 
+		const float OldValue, 
+		const float NewValue) 
+	const;
+	void HandleOnHeatChanged(
+		const FGameplayAttribute& Attribute, 
+		const float OldValue, 
+		const float NewValue) 
+	const;
+	void HandleOnMaxHeatChanged(		
+		const FGameplayAttribute& Attribute, 
+		const float OldValue, 
+		const float NewValue) 
+	const;
+	void HandleOnEnergyChanged(		
+		const FGameplayAttribute& Attribute, 
+		const float OldValue, 
+		const float NewValue) 
+	const;
+	void HandleOnMaxEnergyChanged(		
+		const FGameplayAttribute& Attribute, 
+		const float OldValue, 
+		const float NewValue) 
+	const;
 	void HandleOnOverheat(const FGameplayAttribute& Attribute, float Value) const;
 };

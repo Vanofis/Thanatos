@@ -11,6 +11,7 @@ UEnergyAttributeSet::UEnergyAttributeSet()
 	, MaxEnergy(100.0f)
 	, EnergyDamage(0.0f)
 	, EnergyRestoration(0.0f)
+	, bIsHeatMax(false)
 {}
 
 bool UEnergyAttributeSet::PreGameplayEffectExecute(FGameplayEffectModCallbackData& Data)
@@ -19,12 +20,6 @@ bool UEnergyAttributeSet::PreGameplayEffectExecute(FGameplayEffectModCallbackDat
 	{
 		return false;
 	}
-	
-	GatheredDataPreChanged = GetGatheredData();
-	HeatPreChanged = GetHeat();
-	MaxHeatPreChanged = GetMaxHeat();
-	EnergyPreChanged = GetEnergy();
-	MaxEnergyPreChanged = GetMaxEnergy();
 	
 	return Super::PreGameplayEffectExecute(Data);
 }
@@ -75,61 +70,6 @@ void UEnergyAttributeSet::PostGameplayEffectExecute(const FGameplayEffectModCall
 		SetEnergy(FMath::Clamp(GetEnergy() + GetEnergyRestoration(), MinEnergy, GetMaxEnergy()));
 		SetEnergyRestoration(0.0f);
 	}
-	
-	FOnAttributeChangeData ChangeData;
-	ChangeData.GEModData = &Data;
-	
-	if (!FMath::IsNearlyEqual(GatheredDataPreChanged, GetGatheredData()))
-	{
-		ChangeData.Attribute = GetGatheredDataAttribute();
-		ChangeData.OldValue = GatheredDataPreChanged;
-		ChangeData.NewValue = GetGatheredData();
-		
-		OnGatheredDataChanged.Broadcast(ChangeData);
-	}
-	
-	if (!FMath::IsNearlyEqual(HeatPreChanged, GetHeat()))
-	{
-		ChangeData.Attribute = GetHeatAttribute();
-		ChangeData.OldValue = HeatPreChanged;
-		ChangeData.NewValue = GetHeat();
-		
-		OnGatheredDataChanged.Broadcast(ChangeData);
-	}
-	
-	if (!FMath::IsNearlyEqual(MaxHeatPreChanged, GetMaxHeat()))
-	{
-		ChangeData.Attribute = GetMaxHeatAttribute();
-		ChangeData.OldValue = MaxHeatPreChanged;
-		ChangeData.NewValue = GetMaxHeat();
-		
-		OnGatheredDataChanged.Broadcast(ChangeData);
-	}
-	
-	if (!FMath::IsNearlyEqual(EnergyPreChanged, GetEnergy()))
-	{
-		ChangeData.Attribute = GetEnergyAttribute();
-		ChangeData.OldValue = EnergyPreChanged;
-		ChangeData.NewValue = GetEnergy();
-		
-		OnGatheredDataChanged.Broadcast(ChangeData);
-	}
-	
-	if (!FMath::IsNearlyEqual(MaxEnergyPreChanged, GetMaxEnergy()))
-	{
-		ChangeData.Attribute = GetMaxEnergyAttribute();
-		ChangeData.OldValue = MaxEnergyPreChanged;
-		ChangeData.NewValue = GetMaxEnergy();
-		
-		OnGatheredDataChanged.Broadcast(ChangeData);
-	}
-	
-	if (GetHeat() >= GetMaxHeat() && !bIsHeatMax)
-	{
-		bIsHeatMax = true;
-		
-		OnOverheat.Broadcast(GetHeatAttribute(), GetHeat());
-	}
 }
 
 void UEnergyAttributeSet::PreAttributeChange(const FGameplayAttribute& Attribute, float& NewValue)
@@ -145,5 +85,41 @@ void UEnergyAttributeSet::PreAttributeChange(const FGameplayAttribute& Attribute
 	else if (Attribute == GetEnergyAttribute())
 	{
 		NewValue = FMath::Clamp(NewValue, MinEnergy, GetMaxEnergy());
+	}
+}
+
+void UEnergyAttributeSet::PostAttributeChange(const FGameplayAttribute& Attribute, float OldValue, float NewValue)
+{
+	if (FMath::IsNearlyEqual(OldValue, NewValue))
+	{
+		return;
+	}
+	
+	if (Attribute == GetGatheredDataAttribute())
+	{
+		OnGatheredDataChanged.Broadcast(Attribute, OldValue, NewValue);
+	}
+	else if (Attribute == GetHeatAttribute())
+	{
+		OnHeatChanged.Broadcast(Attribute, OldValue, NewValue);
+		
+		if (!bIsHeatMax && NewValue >= GetMaxHeat())
+		{
+			bIsHeatMax = true;
+			
+			OnOverheat.Broadcast(Attribute, NewValue);
+		}
+	}
+	else if (Attribute == GetMaxHeatAttribute())
+	{
+		OnMaxHeatChanged.Broadcast(Attribute, OldValue, NewValue);
+	}
+	else if (Attribute == GetEnergyAttribute())
+	{
+		OnEnergyChanged.Broadcast(Attribute, OldValue, NewValue);
+	}
+	else if (Attribute == GetMaxEnergyAttribute())
+	{
+		OnMaxEnergyChanged.Broadcast(Attribute, OldValue, NewValue);
 	}
 }

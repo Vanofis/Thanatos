@@ -1,4 +1,5 @@
 ﻿#include "MovementMultipliersAttributeSet.h"
+#include "GameplayEffectExtension.h"
 
 UMovementMultipliersAttributeSet::UMovementMultipliersAttributeSet()
 	: MaxAccelerationMult(1.0f)
@@ -10,69 +11,44 @@ UMovementMultipliersAttributeSet::UMovementMultipliersAttributeSet()
 
 bool UMovementMultipliersAttributeSet::PreGameplayEffectExecute(FGameplayEffectModCallbackData& Data)
 {
-	MaxAccelerationMultPreChanged = GetMaxAccelerationMult();
-	
-	MaxWalkSpeedMultPreChanged = GetMaxWalkSpeedMult();
-	BrakingDecelerationWalkingMultPreChanged = GetBrakingDecelerationWalkingMult();
-	
-	MaxFlySpeedMultPreChanged = GetMaxFlySpeedMult();
-	BrakingDecelerationFlyingMultPreChanged = GetBrakingDecelerationFlyingMult();
+	if (Data.EvaluatedData.Magnitude <= 0.0f)
+	{
+		return false;
+	}
 	
 	return Super::PreGameplayEffectExecute(Data);
-}
-
-void UMovementMultipliersAttributeSet::PostGameplayEffectExecute(const FGameplayEffectModCallbackData& Data)
-{
-	FOnAttributeChangeData ChangeData;
-	ChangeData.GEModData = &Data;
-	
-	if (!FMath::IsNearlyEqual(MaxAccelerationMultPreChanged, GetMaxAccelerationMult()))
-	{
-		ChangeData.Attribute = GetMaxAccelerationMultAttribute();
-		ChangeData.OldValue = MaxAccelerationMultPreChanged;
-		ChangeData.NewValue = GetMaxAccelerationMult();
-		
-		OnMaxAccelerationMultChanged.Broadcast(ChangeData);
-	}
-	
-	if (!FMath::IsNearlyEqual(MaxWalkSpeedMultPreChanged, GetMaxWalkSpeedMult()))
-	{
-		ChangeData.Attribute = GetMaxWalkSpeedMultAttribute();
-		ChangeData.OldValue = MaxWalkSpeedMultPreChanged;
-		ChangeData.NewValue = GetMaxWalkSpeedMult();
-		
-		OnMaxWalkSpeedMultChanged.Broadcast(ChangeData);
-	}
-	
-	if (!FMath::IsNearlyEqual(BrakingDecelerationWalkingMultPreChanged, GetBrakingDecelerationWalkingMult()))
-	{
-		ChangeData.Attribute = GetBrakingDecelerationWalkingMultAttribute();
-		ChangeData.OldValue = BrakingDecelerationWalkingMultPreChanged;
-		ChangeData.NewValue = GetBrakingDecelerationWalkingMult();
-		
-		OnBrakingDecelerationWalkingMultChanged.Broadcast(ChangeData);
-	}
-	
-	if (!FMath::IsNearlyEqual(MaxFlySpeedMultPreChanged, GetMaxFlySpeedMult()))
-	{
-		ChangeData.Attribute = GetMaxFlySpeedMultAttribute();
-		ChangeData.OldValue = MaxFlySpeedMultPreChanged;
-		ChangeData.NewValue = GetMaxFlySpeedMult();
-		
-		OnMaxFlySpeedMultChanged.Broadcast(ChangeData);
-	}
-	
-	if (!FMath::IsNearlyEqual(BrakingDecelerationFlyingMultPreChanged, GetBrakingDecelerationFlyingMult()))
-	{
-		ChangeData.Attribute = GetBrakingDecelerationFlyingMultAttribute();
-		ChangeData.OldValue = BrakingDecelerationFlyingMultPreChanged;
-		ChangeData.NewValue = GetBrakingDecelerationFlyingMult();
-		
-		OnBrakingDecelerationFlyingMultChanged.Broadcast(ChangeData);
-	}
 }
 
 void UMovementMultipliersAttributeSet::PreAttributeChange(const FGameplayAttribute& Attribute, float& NewValue)
 {
 	NewValue = FMath::Max(0.0f, NewValue);
+}
+
+void UMovementMultipliersAttributeSet::PostAttributeChange(const FGameplayAttribute& Attribute, float OldValue, float NewValue)
+{
+	if (FMath::IsNearlyEqual(OldValue, NewValue))
+	{
+		return;
+	}
+	
+	if (Attribute == GetMaxAccelerationMultAttribute())
+	{
+		OnMaxAccelerationMultChanged.Broadcast(Attribute, OldValue, NewValue);
+	}
+	else if (Attribute == GetMaxWalkSpeedMultAttribute())
+	{
+		OnMaxWalkSpeedMultChanged.Broadcast(Attribute, OldValue, NewValue);
+	}
+	else if (Attribute == GetBrakingDecelerationWalkingMultAttribute())
+	{
+		OnBrakingDecelerationWalkingMultChanged.Broadcast(Attribute, OldValue, NewValue);
+	}
+	else if (Attribute == GetMaxFlySpeedMultAttribute())
+	{
+		OnMaxFlySpeedMultChanged.Broadcast(Attribute, OldValue, NewValue);
+	}
+	else if (Attribute == GetBrakingDecelerationFlyingMultAttribute())
+	{
+		OnBrakingDecelerationFlyingMultChanged.Broadcast(Attribute, OldValue, NewValue);
+	}
 }

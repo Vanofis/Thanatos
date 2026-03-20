@@ -12,8 +12,8 @@ class THANATOS_API UHealthAttributeSet : public UAttributeSet
 	GENERATED_BODY()
 	
 public:
-	mutable FOnGameplayAttributeValueChange OnHealthChanged;
-	mutable FOnGameplayAttributeValueChange OnMaxHealthChanged;
+	mutable FGameplayAttributeChangeEventNative OnHealthChanged;
+	mutable FGameplayAttributeChangeEventNative OnMaxHealthChanged;
 	
 	mutable FGameplayAttributeEventNative OnOutOfHealth;
 	
@@ -29,8 +29,7 @@ private:
 	UPROPERTY(BlueprintReadOnly, meta=(AllowPrivateAccess=true))
 	FGameplayAttributeData HealthRestoration;
 	
-	float HealthPreChanged;
-	float MaxHealthPreChanged;
+	bool bIsOutOfHealth;
 	
 public:
 	UHealthAttributeSet();
@@ -39,6 +38,7 @@ public:
 	virtual void PostGameplayEffectExecute(const FGameplayEffectModCallbackData& Data) override;
 	
 	virtual void PreAttributeChange(const FGameplayAttribute& Attribute, float& NewValue) override;
+	virtual void PostAttributeChange(const FGameplayAttribute& Attribute, float OldValue, float NewValue) override;
 	
 	ATTRIBUTE_ACCESSORS_BASIC(UHealthAttributeSet, Health)
 	ATTRIBUTE_ACCESSORS_BASIC(UHealthAttributeSet, MaxHealth)

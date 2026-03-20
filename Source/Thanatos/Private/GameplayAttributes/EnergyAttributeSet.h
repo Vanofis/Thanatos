@@ -12,13 +12,13 @@ class THANATOS_API UEnergyAttributeSet : public UAttributeSet
 	GENERATED_BODY()
 	
 public:
-	mutable FOnGameplayAttributeValueChange OnGatheredDataChanged;
+	mutable FGameplayAttributeChangeEventNative OnGatheredDataChanged;
 	
-	mutable FOnGameplayAttributeValueChange OnHeatChanged;
-	mutable FOnGameplayAttributeValueChange OnMaxHeatChanged;
+	mutable FGameplayAttributeChangeEventNative OnHeatChanged;
+	mutable FGameplayAttributeChangeEventNative OnMaxHeatChanged;
 	
-	mutable FOnGameplayAttributeValueChange OnEnergyChanged;
-	mutable FOnGameplayAttributeValueChange OnMaxEnergyChanged;
+	mutable FGameplayAttributeChangeEventNative OnEnergyChanged;
+	mutable FGameplayAttributeChangeEventNative OnMaxEnergyChanged;
 	
 	mutable FGameplayAttributeEventNative OnOverheat;
 	
@@ -48,14 +48,6 @@ private:
 	UPROPERTY(BlueprintReadOnly, meta=(AllowPrivateAccess=true))
 	FGameplayAttributeData EnergyRestoration;
 	
-	float GatheredDataPreChanged;
-	
-	float HeatPreChanged;
-	float MaxHeatPreChanged;
-	
-	float EnergyPreChanged;
-	float MaxEnergyPreChanged;
-	
 	bool bIsHeatMax;
 	
 public:
@@ -65,6 +57,7 @@ public:
 	virtual void PostGameplayEffectExecute(const FGameplayEffectModCallbackData& Data) override;
 	
 	virtual void PreAttributeChange(const FGameplayAttribute& Attribute, float& NewValue) override;
+	virtual void PostAttributeChange(const FGameplayAttribute& Attribute, float OldValue, float NewValue) override;
 	
 	ATTRIBUTE_ACCESSORS_BASIC(UEnergyAttributeSet, GatheredData)
 	

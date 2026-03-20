@@ -24,10 +24,13 @@ void UAttributeComponent::EndPlay(const EEndPlayReason::Type EndPlayReason)
 	AbilitySystemComponent->RemoveSpawnedAttribute(AttributeSet.Get());
 }
 
-const TArray<FGameplayAttribute>& UAttributeComponent::GetAttributeInitializationOrder()
+TArray<FGameplayAttribute> UAttributeComponent::GetAttributeInitializationOrder()
 {
-	static TArray<FGameplayAttribute> Order;
-	return Order;
+	TArray<FGameplayAttribute> Order;
+	
+	UAttributeSet::GetAttributesFromSetClass(AttributeSetClass, Order);
+	
+	return MoveTemp(Order);
 }
 
 void UAttributeComponent::PreAttributeSetInitialization_Implementation()
