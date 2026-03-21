@@ -1,76 +1,13 @@
 ﻿#include "EnergyAttributeSet.h"
-#include "GameplayEffectExtension.h"
 
 UEnergyAttributeSet::UEnergyAttributeSet()
 	: GatheredData(MinGatheredData)
 	, Heat(MinHeat)
-	, MaxHeat(100.0f)
-	, HeatDecrease(0.0f)
-	, HeatIncrease(0.0f)
-	, Energy(MinEnergy)
+	, MaxHeat(250.0f)
+	, Energy(100.0f)
 	, MaxEnergy(100.0f)
-	, EnergyDamage(0.0f)
-	, EnergyRestoration(0.0f)
 	, bIsHeatMax(false)
 {}
-
-bool UEnergyAttributeSet::PreGameplayEffectExecute(FGameplayEffectModCallbackData& Data)
-{
-	if (Data.EvaluatedData.Magnitude <= 0.0f)
-	{
-		return false;
-	}
-	
-	return Super::PreGameplayEffectExecute(Data);
-}
-
-void UEnergyAttributeSet::PostGameplayEffectExecute(const FGameplayEffectModCallbackData& Data)
-{
-	Super::PostGameplayEffectExecute(Data);
-	
-	const FGameplayAttribute& Attribute = Data.EvaluatedData.Attribute;
-	if (Attribute == GetGatheredDataAttribute())
-	{
-		SetGatheredData(FMath::Max(MinGatheredData, GetGatheredData()));
-	}
-	else if (Attribute == GetHeatAttribute())
-	{
-		SetHeat(FMath::Max(0.0f, GetHeat()));
-	}
-	else if (Attribute == GetMaxHeatAttribute())
-	{
-		SetMaxHeat(FMath::Max(MinHeat, GetMaxHeat()));
-		SetHeat(MinHeat);
-	}
-	else if (Attribute == GetHeatDecreaseAttribute())
-	{
-		SetHeat(FMath::Max(GetHeat() - GetHeatDecrease(), MinHeat));
-		SetHeatDecrease(0.0f);
-	}
-	else if (Attribute == GetHeatIncreaseAttribute())
-	{
-		SetHeat(GetHeat() + GetHeatIncrease());
-		SetHeatIncrease(0.0f);
-	}
-	else if (Attribute == GetEnergyAttribute())
-	{
-		SetEnergy(FMath::Clamp(GetEnergy(), MinEnergy, GetMaxEnergy()));
-	}
-	else if (Attribute == GetMaxEnergyAttribute())
-	{
-		SetEnergy(GetMaxEnergy());
-	}
-	else if (Attribute == GetEnergyDamageAttribute())
-	{
-		SetEnergy(FMath::Clamp(GetEnergy() - GetEnergyDamage(), MinEnergy, GetMaxEnergy()));
-		SetEnergyDamage(0.0f);
-	}
-	else if (Attribute == GetEnergyRestorationAttribute())
-	{
-		SetEnergy(FMath::Clamp(GetEnergy() + GetEnergyRestoration(), MinEnergy, GetMaxEnergy()));
-		SetEnergyRestoration(0.0f);
-	}
-}
 
 void UEnergyAttributeSet::PreAttributeChange(const FGameplayAttribute& Attribute, float& NewValue)
 {
@@ -102,13 +39,6 @@ void UEnergyAttributeSet::PostAttributeChange(const FGameplayAttribute& Attribut
 	else if (Attribute == GetHeatAttribute())
 	{
 		OnHeatChanged.Broadcast(Attribute, OldValue, NewValue);
-		
-		if (!bIsHeatMax && NewValue >= GetMaxHeat())
-		{
-			bIsHeatMax = true;
-			
-			OnOverheat.Broadcast(Attribute, NewValue);
-		}
 	}
 	else if (Attribute == GetMaxHeatAttribute())
 	{
@@ -121,5 +51,12 @@ void UEnergyAttributeSet::PostAttributeChange(const FGameplayAttribute& Attribut
 	else if (Attribute == GetMaxEnergyAttribute())
 	{
 		OnMaxEnergyChanged.Broadcast(Attribute, OldValue, NewValue);
+	}
+	
+	if (!bIsHeatMax && NewValue >= GetMaxHeat())
+	{
+		bIsHeatMax = true;
+		
+		OnOverheat.Broadcast(Attribute, NewValue);
 	}
 }

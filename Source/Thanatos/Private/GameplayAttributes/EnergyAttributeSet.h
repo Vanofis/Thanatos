@@ -34,27 +34,16 @@ private:
 	FGameplayAttributeData Heat;
 	UPROPERTY(BlueprintReadOnly, meta=(AllowPrivateAccess=true))
 	FGameplayAttributeData MaxHeat;
-	UPROPERTY(BlueprintReadOnly, meta=(AllowPrivateAccess=true))
-	FGameplayAttributeData HeatDecrease;
-	UPROPERTY(BlueprintReadOnly, meta=(AllowPrivateAccess=true))
-	FGameplayAttributeData HeatIncrease;
 	
 	UPROPERTY(BlueprintReadOnly, meta=(AllowPrivateAccess=true))
 	FGameplayAttributeData Energy;
 	UPROPERTY(BlueprintReadOnly, meta=(AllowPrivateAccess=true))
 	FGameplayAttributeData MaxEnergy;
-	UPROPERTY(BlueprintReadOnly, meta=(AllowPrivateAccess=true))
-	FGameplayAttributeData EnergyDamage;
-	UPROPERTY(BlueprintReadOnly, meta=(AllowPrivateAccess=true))
-	FGameplayAttributeData EnergyRestoration;
 	
 	bool bIsHeatMax;
 	
 public:
 	UEnergyAttributeSet();
-	
-	virtual bool PreGameplayEffectExecute(FGameplayEffectModCallbackData& Data) override;
-	virtual void PostGameplayEffectExecute(const FGameplayEffectModCallbackData& Data) override;
 	
 	virtual void PreAttributeChange(const FGameplayAttribute& Attribute, float& NewValue) override;
 	virtual void PostAttributeChange(const FGameplayAttribute& Attribute, float OldValue, float NewValue) override;
@@ -63,11 +52,7 @@ public:
 	
 	ATTRIBUTE_ACCESSORS_BASIC(UEnergyAttributeSet, Heat)
 	ATTRIBUTE_ACCESSORS_BASIC(UEnergyAttributeSet, MaxHeat)
-	ATTRIBUTE_ACCESSORS_BASIC(UEnergyAttributeSet, HeatDecrease)
-	ATTRIBUTE_ACCESSORS_BASIC(UEnergyAttributeSet, HeatIncrease)
 	
 	ATTRIBUTE_ACCESSORS_BASIC(UEnergyAttributeSet, Energy)
 	ATTRIBUTE_ACCESSORS_BASIC(UEnergyAttributeSet, MaxEnergy)
-	ATTRIBUTE_ACCESSORS_BASIC(UEnergyAttributeSet, EnergyDamage)
-	ATTRIBUTE_ACCESSORS_BASIC(UEnergyAttributeSet, EnergyRestoration)
 };
