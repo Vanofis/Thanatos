@@ -2,8 +2,8 @@
 #include "GameplayEffectExtension.h"
 
 UHealthAttributeSet::UHealthAttributeSet()
-	: Health(100.0f)
-	, MaxHealth(100.0f)
+	: Health(1.0f)
+	, MaxHealth(0.0f)
 	, HealthDamage(0.0f)
 	, HealthRestoration(0.0f)
 	, bIsOutOfHealth(false)

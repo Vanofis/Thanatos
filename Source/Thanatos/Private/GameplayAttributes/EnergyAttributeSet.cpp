@@ -1,11 +1,11 @@
 ﻿#include "EnergyAttributeSet.h"
 
 UEnergyAttributeSet::UEnergyAttributeSet()
-	: GatheredData(MinGatheredData)
-	, Heat(MinHeat)
-	, MaxHeat(250.0f)
-	, Energy(100.0f)
-	, MaxEnergy(100.0f)
+	: GatheredData(0.0f)
+	, Heat(0.0f)
+	, MaxHeat(1.0f)
+	, Energy(0.0f)
+	, MaxEnergy(0.0f)
 	, bIsHeatMax(false)
 {}
 
