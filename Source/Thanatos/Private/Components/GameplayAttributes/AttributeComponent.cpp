@@ -1,6 +1,6 @@
 ﻿#include "AttributeComponent.h"
 #include "AbilitySystemComponent.h"
-#include "GameplayEffects/AttributeInitializationExecution.h"
+#include "GameplayEffects/Executions/AttributeInitializationExecution.h"
 
 UAttributeComponent::UAttributeComponent()
 {
