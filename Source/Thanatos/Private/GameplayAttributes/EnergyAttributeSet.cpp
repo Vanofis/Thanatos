@@ -51,6 +51,15 @@ void UEnergyAttributeSet::PostAttributeChange(const FGameplayAttribute& Attribut
 	else if (Attribute == GetMaxEnergyAttribute())
 	{
 		OnMaxEnergyChanged.Broadcast(Attribute, OldValue, NewValue);
+		
+		if (GetEnergy() > GetMaxEnergy())
+		{
+			GetOwningAbilitySystemComponentChecked()->ApplyModToAttribute(
+				GetEnergyAttribute(), 
+				EGameplayModOp::Override,
+				GetMaxEnergy()
+				);
+		}
 	}
 	
 	if (!bIsHeatMax && NewValue >= GetMaxHeat())
