@@ -29,6 +29,8 @@ TArray<FGameplayAttribute> UEnergyComponent::GetAttributeInitializationOrder()
 	Order.Add(UEnergyAttributeSet::GetHeatAttribute());
 	Order.Add(UEnergyAttributeSet::GetMaxEnergyAttribute());
 	Order.Add(UEnergyAttributeSet::GetEnergyAttribute());
+	Order.Add(UEnergyAttributeSet::GetEnergyRegenerationRateAttribute());
+	Order.Add(UEnergyAttributeSet::GetHeatDecayRateAttribute());
 	
 	return MoveTemp(Order);
 }
@@ -42,6 +44,10 @@ void UEnergyComponent::PreAttributeSetInitialization_Implementation()
 	EnergyAttributeSet->OnHeatChanged.AddUObject(this, &ThisClass::HandleOnHeatChanged);
 	EnergyAttributeSet->OnMaxEnergyChanged.AddUObject(this, &ThisClass::HandleOnMaxEnergyChanged);
 	EnergyAttributeSet->OnEnergyChanged.AddUObject(this, &ThisClass::HandleOnEnergyChanged);
+	EnergyAttributeSet->OnEnergyNoLongerMax.AddUObject(this, &ThisClass::HandleOnEnergyNoLongerMax);
+	EnergyAttributeSet->OnEnergyMax.AddUObject(this, &ThisClass::HandleOnEnergyMax);
+	EnergyAttributeSet->OnHeatMin.AddUObject(this, &ThisClass::HandleOnHeatMin);
+	EnergyAttributeSet->OnHeatNoLongerMin.AddUObject(this, &ThisClass::HandleOnHeatNoLongerMin);
 	EnergyAttributeSet->OnOverheat.AddUObject(this, &ThisClass::HandleOnOverheat);
 }
 
@@ -96,6 +102,26 @@ void UEnergyComponent::HandleOnMaxEnergyChanged(
 const
 {
 	OnMaxEnergyChanged.Broadcast(Attribute, OldValue, NewValue);
+}
+
+void UEnergyComponent::HandleOnEnergyNoLongerMax(const FGameplayAttribute& Attribute, float Value) const
+{
+	OnEnergyNoLongerMax.Broadcast(Attribute, Value);
+}
+
+void UEnergyComponent::HandleOnEnergyMax(const FGameplayAttribute& Attribute, float Value) const
+{
+	OnEnergyMax.Broadcast(Attribute, Value);
+}
+
+void UEnergyComponent::HandleOnHeatMin(const FGameplayAttribute& Attribute, float Value) const
+{
+	OnHeatMin.Broadcast(Attribute, Value);
+}
+
+void UEnergyComponent::HandleOnHeatNoLongerMin(const FGameplayAttribute& Attribute, float Value) const
+{
+	OnHeatNoLongerMin.Broadcast(Attribute, Value);
 }
 
 void UEnergyComponent::HandleOnOverheat(const FGameplayAttribute& Attribute, float Value) const

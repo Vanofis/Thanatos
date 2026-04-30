@@ -26,6 +26,15 @@ public:
 	mutable FGameplayAttributeChangedEvent OnMaxEnergyChanged;
 	
 	UPROPERTY(BlueprintReadOnly, BlueprintAssignable, Category="Energy Component")
+	mutable FGameplayAttributeEvent OnEnergyNoLongerMax;
+	UPROPERTY(BlueprintReadOnly, BlueprintAssignable, Category="Energy Component")
+	mutable FGameplayAttributeEvent OnEnergyMax;
+	
+	UPROPERTY(BlueprintReadOnly, BlueprintAssignable, Category="Energy Component")
+	mutable FGameplayAttributeEvent OnHeatMin;
+	UPROPERTY(BlueprintReadOnly, BlueprintAssignable, Category="Energy Component")
+	mutable FGameplayAttributeEvent OnHeatNoLongerMin;
+	UPROPERTY(BlueprintReadOnly, BlueprintAssignable, Category="Energy Component")
 	mutable FGameplayAttributeEvent OnOverheat;
 	
 	UEnergyComponent();
@@ -70,5 +79,11 @@ private:
 		const float OldValue, 
 		const float NewValue) 
 	const;
+	
+	void HandleOnEnergyNoLongerMax(const FGameplayAttribute& Attribute, float Value) const;
+	void HandleOnEnergyMax(const FGameplayAttribute& Attribute, float Value) const;
+	
+	void HandleOnHeatMin(const FGameplayAttribute& Attribute, float Value) const;
+	void HandleOnHeatNoLongerMin(const FGameplayAttribute& Attribute, float Value) const;
 	void HandleOnOverheat(const FGameplayAttribute& Attribute, float Value) const;
 };

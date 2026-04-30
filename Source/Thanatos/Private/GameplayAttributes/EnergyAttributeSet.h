@@ -20,6 +20,12 @@ public:
 	mutable FGameplayAttributeChangeEventNative OnEnergyChanged;
 	mutable FGameplayAttributeChangeEventNative OnMaxEnergyChanged;
 	
+	mutable FGameplayAttributeEventNative OnEnergyNoLongerMax;
+	mutable FGameplayAttributeEventNative OnEnergyMax;
+	
+	mutable FGameplayAttributeEventNative OnHeatMin;
+	mutable FGameplayAttributeEventNative OnHeatNoLongerMin;
+	
 	mutable FGameplayAttributeEventNative OnOverheat;
 	
 	static constexpr float MinGatheredData = 200.0f;
@@ -34,13 +40,20 @@ private:
 	FGameplayAttributeData Heat;
 	UPROPERTY(BlueprintReadOnly, meta=(AllowPrivateAccess=true))
 	FGameplayAttributeData MaxHeat;
+	UPROPERTY(BlueprintReadOnly, meta=(AllowPrivateAccess=true))
+	FGameplayAttributeData HeatDecayRate;
 	
 	UPROPERTY(BlueprintReadOnly, meta=(AllowPrivateAccess=true))
 	FGameplayAttributeData Energy;
 	UPROPERTY(BlueprintReadOnly, meta=(AllowPrivateAccess=true))
 	FGameplayAttributeData MaxEnergy;
+	UPROPERTY(BlueprintReadOnly, meta=(AllowPrivateAccess=true))
+	FGameplayAttributeData EnergyRegenerationRate;
 	
+	bool bIsHeatMin;
 	bool bIsHeatMax;
+	
+	bool bEnergyMax;
 	
 public:
 	UEnergyAttributeSet();
@@ -52,7 +65,9 @@ public:
 	
 	ATTRIBUTE_ACCESSORS_BASIC(UEnergyAttributeSet, Heat)
 	ATTRIBUTE_ACCESSORS_BASIC(UEnergyAttributeSet, MaxHeat)
+	ATTRIBUTE_ACCESSORS_BASIC(UEnergyAttributeSet, HeatDecayRate)
 	
 	ATTRIBUTE_ACCESSORS_BASIC(UEnergyAttributeSet, Energy)
 	ATTRIBUTE_ACCESSORS_BASIC(UEnergyAttributeSet, MaxEnergy)
+	ATTRIBUTE_ACCESSORS_BASIC(UEnergyAttributeSet, EnergyRegenerationRate)
 };
