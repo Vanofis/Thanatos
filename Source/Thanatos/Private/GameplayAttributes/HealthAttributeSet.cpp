@@ -69,7 +69,7 @@ void UHealthAttributeSet::PostAttributeChange(const FGameplayAttribute& Attribut
 		OnMaxHealthChanged.Broadcast(Attribute, OldValue, NewValue);
 	}
 
-	if (!bIsOutOfHealth && NewValue <= MinHealth)
+	if (!bIsOutOfHealth && GetHealth() <= MinHealth)
 	{
 		bIsOutOfHealth = true;
 		
