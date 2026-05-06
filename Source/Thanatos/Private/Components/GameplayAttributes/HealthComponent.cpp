@@ -11,17 +11,6 @@ float UHealthComponent::GetMinHealth()
 	return UHealthAttributeSet::MinHealth;
 }
 
-float UHealthComponent::GetDamageMultiplier(const FGameplayTag MultiplierTag) const
-{
-	const float* DamageMultiplierPtr = DamageModifiers.Find(MultiplierTag);
-	if (!DamageMultiplierPtr)
-	{
-		return 0.0f;
-	}
-	
-	return *DamageMultiplierPtr;
-}
-
 TArray<FGameplayAttribute> UHealthComponent::GetAttributeInitializationOrder()
 {
 	TArray<FGameplayAttribute> Order;
